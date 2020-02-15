@@ -1,12 +1,15 @@
 {
-    "name": "osmscripts/phpstorm",
+    "name": "osmscripts\/phpstorm",
     "autoload": {
         "psr-4": {
-            "OsmScripts\\PhpStorm\\": "src/"
+            "OsmScripts\\PhpStorm\\": "src\/"
         }
     },
     "require": {
         "php": "^7.2",
-        "osmscripts/core": "^1.1"
-    }
+        "osmscripts\/core": "^1.1"
+    },
+    "bin": [
+        "phpstorm"
+    ]
 }
