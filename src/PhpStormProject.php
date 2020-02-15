@@ -52,5 +52,38 @@ class PhpStormProject extends Object_
         return $path ? "\$PROJECT_DIR\$/{$path}" : '$PROJECT_DIR$';
     }
 
+    public function removeProjectDirVariable($path) {
+        if (mb_strpos($path, '$PROJECT_DIR$') !== 0) {
+            return $path;
+        }
 
+        return ltrim(mb_substr($path, mb_strlen('$PROJECT_DIR$')), '/');
+    }
+
+    public function getVcsPaths() {
+        $result = [];
+
+        foreach ($this->vcs->component->mapping ?? [] as $mapping) {
+            $result[] = $this->removeProjectDirVariable((string)$mapping['directory']);
+        }
+
+        return $result;
+    }
+
+    public function addVcsPath($path) {
+        if (!isset($this->vcs->component)) {
+            $this->vcs = simplexml_load_string(<<<EOT
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+  </component>
+</project>
+EOT
+            );
+        }
+
+        $mapping = $this->vcs->component->addChild('mapping');
+        $mapping->addAttribute('directory', $this->addProjectDirVariable($path));
+        $mapping->addAttribute('vcs', 'Git');
+    }
 }

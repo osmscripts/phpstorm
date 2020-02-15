@@ -56,37 +56,11 @@ class ConfigGit extends Command
             return false;
         }
 
-        $path = $this->phpstorm->addProjectDirVariable($path);
-
-        if ($this->configured($path)) {
+        if (in_array($path, $this->phpstorm->getVcsPaths())) {
             return false;
         }
 
-        if (!isset($this->phpstorm->vcs->component)) {
-            $this->phpstorm->vcs = simplexml_load_string(<<<EOT
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="VcsDirectoryMappings">
-  </component>
-</project>
-EOT
-            );
-        }
-
-        $mapping = $this->phpstorm->vcs->component->addChild('mapping');
-        $mapping->addAttribute('directory', $path);
-        $mapping->addAttribute('vcs', 'Git');
-
+        $this->phpstorm->addVcsPath($path);
         return true;
-    }
-
-    protected function configured($path) {
-        foreach ($this->phpstorm->vcs->component->mapping ?? [] as $mapping) {
-            if ($path == (string)$mapping['directory']) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
