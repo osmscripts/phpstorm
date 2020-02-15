@@ -1,0 +1,7 @@
+{
+    "phpstorm": {
+        "commands": {
+            "config:git": "OsmScripts\\PhpStorm\\Commands\\ConfigGit"
+        }
+    }
+}
